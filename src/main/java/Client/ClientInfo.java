@@ -11,26 +11,28 @@ public class ClientInfo {
     private boolean isIP = false;
     private boolean IPServer = false;
 
-    public ClientInfo(String userName, String ipOrHostName, long port, String ipServer, long portServer) throws InvalidPropertiesFormatException {
-        Pair<Boolean, String> isIpValid = validIPOrHostname(ipOrHostName);
+    public ClientInfo(String userName, String localIP, long localPort, String ipServer, long portServer) throws InvalidPropertiesFormatException {
+        Pair<Boolean, String> isIpValid = validIPOrHostname(localIP);
+        Pair<Boolean, String> isIpServerValid = validIPOrHostname(ipServer);
+
         if (isIpValid.getKey()) {
             if (isIpValid.getValue().equals("IP")) {
                 this.isIP = true;
             }
-            this.ipAddress = ipOrHostName;
+            this.ipAddress = localIP;
         } else {
-            throw new InvalidPropertiesFormatException(ipOrHostName + " is Invalid");
+            throw new InvalidPropertiesFormatException(ipAddress + " is Invalid");
         }
-        if (isIpValid.getKey()) {
-            if (isIpValid.getValue().equals("IP")) {
+        if (isIpServerValid.getKey()) {
+            if (isIpServerValid.getValue().equals("IP")) {
                 this.IPServer = true;
             }
             this.ipServer = ipServer;
         } else {
-            throw new InvalidPropertiesFormatException(ipOrHostName + " is Invalid");
+            throw new InvalidPropertiesFormatException(ipServer + " is Invalid");
         }
         if (validPort(port)) {
-            this.port = port;
+            this.port = localPort;
         } else {
             throw new InvalidPropertiesFormatException(port + " is Invalid");
         }
@@ -42,6 +44,25 @@ public class ClientInfo {
         this.userName = userName;
     }
 
+    public ClientInfo(  String ipServer, long portServer) throws InvalidPropertiesFormatException {
+         Pair<Boolean, String> isIpServerValid = validIPOrHostname(ipServer);
+
+
+        if (isIpServerValid.getKey()) {
+            if (isIpServerValid.getValue().equals("IP")) {
+                this.IPServer = true;
+            }
+            this.ipServer = ipServer;
+        } else {
+            throw new InvalidPropertiesFormatException(ipServer + " is Invalid");
+        }
+
+        if (validPort(portServer)) {
+            this.portServer = portServer;
+        } else {
+            throw new InvalidPropertiesFormatException(port + " is Invalid");
+        }
+     }
     public Pair<Boolean, String> validIPOrHostname(String ip) {
         String validIPAddressRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}" +
                 "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";

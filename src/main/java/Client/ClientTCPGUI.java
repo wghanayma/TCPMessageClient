@@ -156,6 +156,10 @@ public class ClientTCPGUI {
                         ClientTCPGUI.this.clientThread.interrupt();
                         connectionSocket.close();
                         ClientTCPGUI.this.textFieldUsername.setEnabled(login);
+                        textFieldRemoteIP.setText(null);
+                        textFieldRemotePort.setText(null);
+                        textAreaMessage.setText(null);
+                        textAreaSend.setText(null);
                         login = false;
                     } catch (ConnectException exception) {
                         JOptionPane.showMessageDialog(null
@@ -218,31 +222,39 @@ public class ClientTCPGUI {
         listUsers.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    String dataUserName = listUsers.getSelectedValue().toString();
-                    String[] arrOfStr = dataUserName.split(" - ");
-                    // setUsernamePortSelection( arrOfStr[0]);
-                    UsernamePortSelection = arrOfStr[0];
-                    RemoteIPSelection = arrOfStr[1];
-                    RemotePortSelection = arrOfStr[2];
-                    textFieldRemoteIP.setText(arrOfStr[1]);
-                    textFieldRemotePort.setText(arrOfStr[2]);
-                    sendButton.setEnabled(login);
-                    System.out.println("UsernamePortSelection listUsers" + UsernamePortSelection);
-                    System.out.println("UsernamePortSelection listUsers clientsListmessages" + clientsListmessages.size());
-                    // System.out.println("UsernamePortSelection listUsers " + MessagesClient.messagesClientUsernameExist(clientsListmessages, UsernamePortSelection));
-                }
-                textAreaMessage.setText("");
-                if (UsernamePortSelection != null) {
-                    StringBuilder str = new StringBuilder();
-                    for (int i = 0; i < clientsListmessages.size(); i++) {
-                        textAreaMessage.setText("");
-                        if (clientsListmessages.get(i).username.equals(UsernamePortSelection)) {
-                            str.append(clientsListmessages.get(i).message);
-                            System.out.println(i + " : " + clientsListmessages.get(i).message);
-                        }
+                if (listUsers.getSelectedValue() != null) {
+                    if (!e.getValueIsAdjusting()) {
+                        String dataUserName = listUsers.getSelectedValue().toString();
+                        String[] arrOfStr = dataUserName.split(" - ");
+                        // setUsernamePortSelection( arrOfStr[0]);
+                        UsernamePortSelection = arrOfStr[0];
+                        RemoteIPSelection = arrOfStr[1];
+                        RemotePortSelection = arrOfStr[2];
+                        textFieldRemoteIP.setText(arrOfStr[1]);
+                        textFieldRemotePort.setText(arrOfStr[2]);
+                        sendButton.setEnabled(login);
+                        System.out.println("UsernamePortSelection listUsers" + UsernamePortSelection);
+                        System.out.println("UsernamePortSelection listUsers clientsListmessages" + clientsListmessages.size());
+                        // System.out.println("UsernamePortSelection listUsers " + MessagesClient.messagesClientUsernameExist(clientsListmessages, UsernamePortSelection));
                     }
-                    textAreaMessage.setText(str.toString());
+                    textAreaMessage.setText("");
+                    if (UsernamePortSelection != null) {
+                        StringBuilder str = new StringBuilder();
+                        for (int i = 0; i < clientsListmessages.size(); i++) {
+                            textAreaMessage.setText("");
+                            if (clientsListmessages.get(i).username.equals(UsernamePortSelection)) {
+                                str.append(clientsListmessages.get(i).message);
+                                System.out.println(i + " : " + clientsListmessages.get(i).message);
+                            }
+                        }
+                        textAreaMessage.setText(str.toString());
+                    }
+                } else {
+                    textFieldRemoteIP.setText(null);
+                    textFieldRemotePort.setText(null);
+                    textAreaMessage.setText(null);
+                    textAreaSend.setText(null);
+                    sendButton.setEnabled(false);
                 }
             }
         });
@@ -267,7 +279,6 @@ public class ClientTCPGUI {
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.pack();
         jFrame.setMinimumSize(new Dimension(850, 300));
-
         jFrame.setVisible(true);
         jFrame.setLocationRelativeTo(null);
     }

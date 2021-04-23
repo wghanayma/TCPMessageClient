@@ -12,7 +12,7 @@ public class Pair<T, U> {
     private final T key;
     private final U value;
 
-    Pair(T key, U value) {
+    public Pair(T key, U value) {
         this.key = key;
         this.value = value;
     }

@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
@@ -23,12 +24,14 @@ public class ServerThread extends Thread {
     private final Object sync = new Object();
     private int port;
     private boolean run;
-
-    ServerThread(JList<String> jList, int port) {
+    private String serverIP;
+    private InetAddress inetAddress;
+    ServerThread(JList<String> jList, String serverIP, int port) {
         this.jList = jList;
         clientArrayList = new Vector<>();
         run = true;
         this.port = port;
+        this.serverIP = serverIP;
     }
 
     @Override

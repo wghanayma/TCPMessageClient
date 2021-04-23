@@ -1,6 +1,7 @@
 package Server;
 
 import javax.swing.*;
+import java.util.InvalidPropertiesFormatException;
 
 public class TCPServerGUI {
     private JTextField textFieldPortServer;
@@ -14,13 +15,22 @@ public class TCPServerGUI {
     TCPServerGUI() {
         buttonRunServer.addActionListener(e -> {
             if (runServer) {
-                buttonRunServer.setText("Stop Server");
                 if (!textFieldIPServer.getText().isEmpty()) {
-                    if (!textFieldPortServer.getText().isEmpty() && Integer.parseInt(textFieldPortServer.getText()) > 1024 && Integer.parseInt(textFieldPortServer.getText()) < 65536) {
-                        int port = Integer.parseInt(textFieldPortServer.getText());
-                        serverThread = new ServerThread(TCPServerGUI.this.listClient, port);
-                        serverThread.start();
-                        runServer = false;
+                    if (!textFieldPortServer.getText().isEmpty()) {
+                        String serverIP = null;
+                        try {
+                            serverIP = getServerDetail().getIpAddressServer();
+                            int port = 0;
+
+                                port = (int) getServerDetail().getPortServer();
+                                serverThread = new ServerThread(TCPServerGUI.this.listClient, serverIP, port);
+                                serverThread.start();
+                                runServer = false;
+                                buttonRunServer.setText("Stop Server");
+
+                        } catch (InvalidPropertiesFormatException | NumberFormatException invalidPropertiesFormatException) {
+                            JOptionPane.showMessageDialog(jPanelMain, "Please valid Input ", "Server", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(jPanelMain, "Please put Server Port", "Server Port", JOptionPane.ERROR_MESSAGE);
                     }
@@ -33,6 +43,10 @@ public class TCPServerGUI {
                 runServer = true;
             }
         });
+    }
+
+    public ServerInfo getServerDetail() throws NumberFormatException, InvalidPropertiesFormatException {
+        return new ServerInfo(this.textFieldIPServer.getText(), Integer.parseInt(this.textFieldPortServer.getText()));
     }
 
     public static void main(String[] args) {
